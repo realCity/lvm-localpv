@@ -328,7 +328,7 @@ func CreateVolume(vol *apis.LVMVolume) error {
 
 	// Deactivate the volume(s) if the shared mode is exclusive
 	if vol.Spec.SharedMode == apis.LVMExclusiveSharedMode {
-		err = ActivateLVMLogicalVolume(vol, false)
+		err = ChangeSharedLVMLogicalVolume(vol, false)
 		if err != nil {
 			return err
 		}
@@ -338,8 +338,8 @@ func CreateVolume(vol *apis.LVMVolume) error {
 	return nil
 }
 
-// ActivateLVMLogicalVolume activates/deactivates the logical volume(s)
-func ActivateLVMLogicalVolume(vol *apis.LVMVolume, activate bool) error {
+// ChangeSharedLVMLogicalVolume activates/deactivates the logical volume(s)
+func ChangeSharedLVMLogicalVolume(vol *apis.LVMVolume, activate bool) error {
 	// form the desired state argument:
 	// 	1. -ay|-aey : activates the LV in exclusive mode, allowing a single host to activate the LV
 	// 	2. -an : deactivates the LV
@@ -393,7 +393,7 @@ func DestroyVolume(vol *apis.LVMVolume) error {
 	// activate the LV first if shared mode is exclusive, otherwise
 	// erasing the filesystem from lv won't work
 	if vol.Spec.SharedMode == apis.LVMExclusiveSharedMode {
-		err = ActivateLVMLogicalVolume(vol, true)
+		err = ChangeSharedLVMLogicalVolume(vol, true)
 		if err != nil {
 			return err
 		}
@@ -407,7 +407,7 @@ func DestroyVolume(vol *apis.LVMVolume) error {
 
 	// before removing the LV, deactivate the LV first if shared mode is exclusive
 	if vol.Spec.SharedMode == apis.LVMExclusiveSharedMode {
-		err = ActivateLVMLogicalVolume(vol, false)
+		err = ChangeSharedLVMLogicalVolume(vol, false)
 		if err != nil {
 			return err
 		}

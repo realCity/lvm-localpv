@@ -276,7 +276,7 @@ func (ns *node) NodePublishVolume(
 		// volume lease to expire on the previous faulted node.
 		// TODO move this to NodeStage request
 		for i := 1; i <= loopCount; i++ {
-			err = lvm.ActivateLVMLogicalVolume(vol, true)
+			err = lvm.ChangeSharedLVMLogicalVolume(vol, true)
 			if err == nil {
 				klog.Infof("lvm: activated volume %s successfully", lvVolume)
 				break
@@ -355,7 +355,7 @@ func (ns *node) NodeUnpublishVolume(
 	if vol.Spec.SharedMode == apis.LVMExclusiveSharedMode {
 		// Deactivate the LV before sending a successful response
 		// lvchange -an <lv-name>
-		err = lvm.ActivateLVMLogicalVolume(vol, false)
+		err = lvm.ChangeSharedLVMLogicalVolume(vol, false)
 		if err != nil {
 			return nil, err
 		}
