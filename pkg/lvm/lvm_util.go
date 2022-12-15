@@ -248,7 +248,8 @@ func buildLVMCreateArgs(vol *apis.LVMVolume) []string {
 	}
 
 	// -y is used to wipe the signatures before creating LVM volume
-	LVMVolArg = append(LVMVolArg, "-y")
+	LVMVolArg = append(LVMVolArg, "--wipesignatures", "n")
+	LVMVolArg = append(LVMVolArg, "--zero", "n")
 	return LVMVolArg
 }
 
