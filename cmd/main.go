@@ -53,6 +53,8 @@ func main() {
 		},
 	}
 
+	klog.InitFlags(nil)
+
 	cmd.Flags().AddGoFlagSet(flag.CommandLine)
 
 	cmd.PersistentFlags().StringVar(
