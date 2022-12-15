@@ -528,7 +528,7 @@ func ResizeLVMVolume(vol *apis.LVMVolume, resizefs bool) error {
 		)
 	}
 
-	return err
+	return nil
 }
 
 // getLVSize will return current LVM volume size in bytes
@@ -544,7 +544,7 @@ func getLVSize(vol *apis.LVMVolume) (uint64, error) {
 	}
 
 	cmd := exec.Command(LVList, args...)
-	raw, err := cmd.CombinedOutput()
+	raw, err := cmd.Output()
 	if err != nil {
 		return 0, errors.Wrapf(
 			err,
@@ -779,7 +779,7 @@ func ListLVMVolumeGroup(reloadCache bool) ([]apis.VolumeGroup, error) {
 		"--units", "b",
 	}
 	cmd := exec.Command(VGList, args...)
-	output, err := cmd.CombinedOutput()
+	output, err := cmd.Output()
 	if err != nil {
 		klog.Errorf("lvm: list volume group cmd %v: %v", args, err)
 		return nil, err
@@ -974,7 +974,7 @@ func ListLVMLogicalVolume() ([]LogicalVolume, error) {
 		"--units", "b",
 	}
 	cmd := exec.Command(LVList, args...)
-	output, err := cmd.CombinedOutput()
+	output, err := cmd.Output()
 	if err != nil {
 		klog.Errorf("lvm: error while running command %s %v: %v", LVList, args, err)
 		return nil, err
@@ -996,7 +996,7 @@ func ListLVMPhysicalVolume() ([]PhysicalVolume, error) {
 		"--units", "b",
 	}
 	cmd := exec.Command(PVList, args...)
-	output, err := cmd.CombinedOutput()
+	output, err := cmd.Output()
 	if err != nil {
 		klog.Errorf("lvm: error while running command %s %v: %v", PVList, args, err)
 		return nil, err
@@ -1123,9 +1123,9 @@ func decodePvsJSON(raw []byte) ([]PhysicalVolume, error) {
 // lvThinExists verifies if thin pool/volume already exists for given volumegroup
 func lvThinExists(vg string, name string) bool {
 	cmd := exec.Command("lvs", vg+"/"+name, "--noheadings", "-o", "lv_name")
-	out, err := cmd.CombinedOutput()
+	out, err := cmd.Output()
 	if err != nil {
-		klog.Errorf("failed to list existing volumes:%v", err)
+		klog.Errorf("failed to list existing volumes: %v", err)
 		return false
 	}
 	return name == strings.TrimSpace(string(out))
@@ -1135,7 +1135,7 @@ func lvThinExists(vg string, name string) bool {
 // and snapshot name.
 func isSnapshotExists(vg, snapVolumeName string) (bool, error) {
 	cmd := exec.Command("lvs", vg+"/"+snapVolumeName, "--noheadings", "-o", "lv_name")
-	out, err := cmd.CombinedOutput()
+	out, err := cmd.Output()
 	if err != nil {
 		return false, err
 	}
@@ -1145,7 +1145,7 @@ func isSnapshotExists(vg, snapVolumeName string) (bool, error) {
 // getVGSize get the size in bytes for given volumegroup name
 func getVGSize(vgname string) string {
 	cmd := exec.Command("vgs", vgname, "--noheadings", "-o", "vg_free", "--units", "b", "--nosuffix")
-	out, err := cmd.CombinedOutput()
+	out, err := cmd.Output()
 	if err != nil {
 		klog.Errorf("failed to list existing volumegroup:%v , %v", vgname, err)
 		return ""
