@@ -438,13 +438,9 @@ func CheckVolumeExists(vol *apis.LVMVolume) (bool, error) {
 	// that the host on which the volume is to be checked might have it deactivated.
 	// Thus, not showing it in the devpath giving the feeling of volume not existing.
 	if vol.Spec.SharedMode == apis.LVMExclusiveSharedMode {
-		// check the presence of the desired lv
+		// check the presence of the desired lv, ignoring the return value
 		cmd := exec.Command("lvs", vol.Spec.VolGroup+"/"+vol.Name, "--noheadings", "-o", "lv_name")
-		out, err := cmd.CombinedOutput()
-		if err != nil {
-			klog.Errorf("failed to list existing volume: %v", err)
-			return false, err
-		}
+		out, _ := cmd.Output()
 		return vol.Name == strings.TrimSpace(string(out)), nil
 	}
 
