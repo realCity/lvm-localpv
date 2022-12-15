@@ -71,6 +71,7 @@ var (
 		"lv_health_status":     {"", "partial", "refresh needed", "mismatches exist"},
 		"vg_allocation_policy": {"normal", "contiguous", "cling", "anywhere", "inherited"},
 		"vg_permissions":       {"writeable", "read-only"},
+		"vg_shared":            {"", "shared"},
 	}
 )
 
@@ -732,6 +733,7 @@ func parseVolumeGroup(m map[string]string) (apis.VolumeGroup, error) {
 		*value = *quantity //
 	}
 
+	vg.SharedMode = getIntFieldValue(VGShared, m[VGShared])
 	vg.Permission = getIntFieldValue(VGPermissions, m[VGPermissions])
 	vg.AllocationPolicy = getIntFieldValue(VGAllocationPolicy, m[VGAllocationPolicy])
 

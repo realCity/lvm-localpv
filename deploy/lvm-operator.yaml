@@ -344,6 +344,11 @@ spec:
                   format: int32
                   minimum: 0
                   type: integer
+                shared:
+                  default: 0
+                  description: 'Shared state of the lvm volume group [0: "none", 1:
+                    "exclusive", 2: "shared"]'
+                  type: integer
                 size:
                   anyOf:
                   - type: integer
@@ -374,6 +379,7 @@ spec:
               - name
               - permissions
               - pvCount
+              - shared
               - size
               - snapCount
               - uuid

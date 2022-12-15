@@ -41,6 +41,7 @@ type vgCollector struct {
 	vgMetadataSizeMetric      *prometheus.Desc
 	vgPermissionsMetric       *prometheus.Desc
 	vgAllocationPolicyMetric  *prometheus.Desc
+	vgSharedModeMetric        *prometheus.Desc
 }
 
 func NewVgCollector() prometheus.Collector {
@@ -101,6 +102,10 @@ func NewVgCollector() prometheus.Collector {
 			"VG allocation policy: [-1: undefined], [0: normal], [1: contiguous], [2: cling], [3: anywhere], [4: inherited]",
 			[]string{"name"}, nil,
 		),
+		vgSharedModeMetric: prometheus.NewDesc(prometheus.BuildFQName("lvm", "vg", "shared_mode"),
+			"VG shared: [-1: undefined], [0: none], [1: exclusive], [2: shared]",
+			[]string{"name"}, nil,
+		),
 	}
 }
 
@@ -119,6 +124,7 @@ func (c *vgCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.vgMetadataSizeMetric
 	ch <- c.vgPermissionsMetric
 	ch <- c.vgAllocationPolicyMetric
+	ch <- c.vgSharedModeMetric
 }
 
 func (c *vgCollector) Collect(ch chan<- prometheus.Metric) {
@@ -141,6 +147,7 @@ func (c *vgCollector) Collect(ch chan<- prometheus.Metric) {
 			ch <- prometheus.MustNewConstMetric(c.vgMetadataSizeMetric, prometheus.GaugeValue, vg.MetadataSize.AsApproximateFloat64(), vg.Name)
 			ch <- prometheus.MustNewConstMetric(c.vgPermissionsMetric, prometheus.GaugeValue, float64(vg.Permission), vg.Name)
 			ch <- prometheus.MustNewConstMetric(c.vgAllocationPolicyMetric, prometheus.GaugeValue, float64(vg.AllocationPolicy), vg.Name)
+			ch <- prometheus.MustNewConstMetric(c.vgSharedModeMetric, prometheus.GaugeValue, float64(vg.SharedMode), vg.Name)
 		}
 	}
 }

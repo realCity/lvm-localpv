@@ -21,6 +21,7 @@ const (
 	VGName              = "vg_name"
 	VGUUID              = "vg_uuid"
 	VGAttr              = "vg_attr"
+	VGShared            = "vg_shared"
 	VGPVvount           = "pv_count"
 	VGLvCount           = "lv_count"
 	VGMaxLv             = "max_lv"

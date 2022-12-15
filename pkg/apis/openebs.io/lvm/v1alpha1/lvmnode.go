@@ -55,6 +55,12 @@ type VolumeGroup struct {
 	// +kubebuilder:validation:MinLength=1
 	Attribute string `json:"attr"`
 
+	// Shared state of the lvm volume group
+	// +kubebuilder:default:=0
+	// +kubebuilder:validation:Required
+	// [0: "none", 1: "exclusive", 2: "shared"]
+	SharedMode int `json:"shared"`
+
 	// Size specifies the total size of volume group.
 	// +kubebuilder:validation:Required
 	Size resource.Quantity `json:"size"`

@@ -33,10 +33,11 @@ type VolumeParams struct {
 	// provisioning logical volumes.
 	VgPattern *regexp.Regexp
 
-	Scheduler     string
-	Shared        string
-	SharedMode    string
-	ThinProvision string
+	AllowedTopology string
+	Scheduler       string
+	Shared          string
+	SharedMode      string
+	ThinProvision   string
 	// extra optional metadata passed by external provisioner
 	// if enabled. See --extra-create-metadata flag for more details.
 	// https://github.com/kubernetes-csi/external-provisioner#recommended-optional-arguments
@@ -82,10 +83,11 @@ func NewVolumeParams(m map[string]string) (*VolumeParams, error) {
 
 	// parse string params
 	stringParams := map[string]*string{
-		"scheduler":     &params.Scheduler,
-		"shared":        &params.Shared,
-		"sharedmode":    &params.SharedMode,
-		"thinprovision": &params.ThinProvision,
+		"allowedtopology": &params.AllowedTopology,
+		"scheduler":       &params.Scheduler,
+		"shared":          &params.Shared,
+		"sharedmode":      &params.SharedMode,
+		"thinprovision":   &params.ThinProvision,
 	}
 	for key, param := range stringParams {
 		value, ok := m[key]
