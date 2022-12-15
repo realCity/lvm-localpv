@@ -134,10 +134,6 @@ func verifyMountRequest(vol *apis.LVMVolume, mountpath string) (bool, error) {
 		return false, status.Error(codes.InvalidArgument, "verifyMount: mount path missing in request")
 	}
 
-	if len(vol.Spec.OwnerNodeID) > 0 &&
-		vol.Spec.OwnerNodeID != NodeID {
-		return false, status.Error(codes.Internal, "verifyMount: volume is owned by different node")
-	}
 	if vol.Finalizers == nil {
 		return false, status.Error(codes.Internal, "verifyMount: volume is not ready to be mounted")
 	}
@@ -169,7 +165,7 @@ func verifyMountRequest(vol *apis.LVMVolume, mountpath string) (bool, error) {
 			}
 		}
 
-		// if it is not a shared volume, then it should not mounted to more than one path
+		// if it is not a shared volume, then it should not be mounted to more than one path
 		if vol.Spec.Shared != "yes" {
 			klog.Errorf(
 				"can not mount, volume:%s already mounted dev %s mounts: %v",

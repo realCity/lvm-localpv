@@ -258,7 +258,13 @@ func (ns *node) NodePublishVolume(
 		klog.Warningf("PodLVInfo could not be obtained for volume_id: %s, err = %v", req.VolumeId, err)
 	}
 
-	if vol.Spec.SharedMode == apis.LVMExclusiveSharedMode {
+	switch vol.Spec.SharedMode {
+	case apis.LVMNoneSharedMode:
+		if len(vol.Spec.OwnerNodeID) > 0 &&
+			vol.Spec.OwnerNodeID != lvm.NodeID {
+			return nil, status.Error(codes.Internal, "verifyMount: volume is owned by different node")
+		}
+	case apis.LVMExclusiveSharedMode:
 		lvVolume := vol.Spec.VolGroup + "/" + vol.Name
 		// start the volume group first
 		err = lvm.StartLVMVolumeGroup(vol)
