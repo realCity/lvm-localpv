@@ -762,6 +762,15 @@ spec:
             topologyKey: "kubernetes.io/hostname"
       priorityClassName: openebs-lvm-localpv-csi-controller-critical
       serviceAccount: openebs-lvm-controller-sa
+      tolerations:
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+        operator: Exists
       containers:
         - name: csi-resizer
           image: k8s.gcr.io/sig-storage/csi-resizer:v1.2.0
